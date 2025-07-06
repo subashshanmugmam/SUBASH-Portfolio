@@ -90,7 +90,7 @@ const ProjectsSection = () => {
       rotateX: 0,
       transition: {
         duration: 0.8,
-        type: "spring",
+        type: "spring" as const,
         stiffness: 100
       }
     }
@@ -118,7 +118,7 @@ const ProjectsSection = () => {
           </motion.div>
           
           <motion.h2 
-            className="text-4xl md:text-5xl font-bold text-white mb-6"
+            className="text-4xl md:text-5xl font-bold text-white mb-6 bg-clip-text text-transparent"
             animate={{
               backgroundPosition: ["0%", "100%", "0%"]
             }}
@@ -131,7 +131,6 @@ const ProjectsSection = () => {
               backgroundSize: "200% 200%",
               backgroundImage: "linear-gradient(45deg, #F8FAFC, #3B82F6, #14B8A6, #F8FAFC)"
             }}
-            className="bg-clip-text text-transparent"
           >
             Featured Projects
           </motion.h2>
