@@ -3,10 +3,19 @@ import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ExternalLink, Github, Sparkles, Zap, Brain, Code } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Register GSAP plugins
+gsap.registerPlugin(ScrollTrigger);
 
 const ProjectsSection = () => {
   const [hoveredProject, setHoveredProject] = useState<number | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
+  const projectsGridRef = useRef<HTMLDivElement>(null);
+  const projectRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const projects = [
     {
@@ -71,6 +80,124 @@ const ProjectsSection = () => {
     },
   ];
 
+  useEffect(() => {
+    // GSAP Timeline for section entrance
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top 80%",
+        end: "bottom 20%",
+        toggleActions: "play none none reverse"
+      }
+    });
+
+    // Animate title with typewriter effect
+    if (titleRef.current) {
+      gsap.set(titleRef.current, { opacity: 0, y: 50 });
+      tl.to(titleRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: "power3.out"
+      });
+    }
+
+    // Animate projects grid with stagger
+    if (projectsGridRef.current) {
+      const projectCards = projectRefs.current.filter(Boolean);
+      gsap.set(projectCards, { opacity: 0, y: 100, rotationX: -15 });
+      
+      tl.to(projectCards, {
+        opacity: 1,
+        y: 0,
+        rotationX: 0,
+        duration: 0.8,
+        stagger: 0.15,
+        ease: "back.out(1.7)"
+      }, "-=0.5");
+    }
+
+    // Floating animation for tech tags
+    projectRefs.current.forEach((projectRef, index) => {
+      if (projectRef) {
+        const techTags = projectRef.querySelectorAll('.tech-tag');
+        gsap.to(techTags, {
+          y: "random(-5, 5)",
+          duration: "random(2, 4)",
+          repeat: -1,
+          yoyo: true,
+          ease: "sine.inOut",
+          stagger: 0.1
+        });
+      }
+    });
+
+    // Cleanup function
+    return () => {
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    };
+  }, []);
+
+  // GSAP hover animations
+  const handleProjectHover = (index: number, isHovering: boolean) => {
+    setHoveredProject(isHovering ? index : null);
+    
+    const projectRef = projectRefs.current[index];
+    if (!projectRef) return;
+
+    const icon = projectRef.querySelector('.project-icon');
+    const card = projectRef.querySelector('.project-card');
+    const techTags = projectRef.querySelectorAll('.tech-tag');
+
+    if (isHovering) {
+      // Hover in animations
+      gsap.to(card, { 
+        scale: 1.03, 
+        rotationY: 5, 
+        rotationX: 5,
+        duration: 0.3, 
+        ease: "power2.out" 
+      });
+      
+      gsap.to(icon, { 
+        rotation: 360, 
+        scale: 1.2, 
+        duration: 0.6, 
+        ease: "back.out(1.7)" 
+      });
+
+      gsap.to(techTags, {
+        scale: 1.1,
+        duration: 0.2,
+        stagger: 0.05,
+        ease: "power2.out"
+      });
+    } else {
+      // Hover out animations
+      gsap.to(card, { 
+        scale: 1, 
+        rotationY: 0, 
+        rotationX: 0,
+        duration: 0.3, 
+        ease: "power2.out" 
+      });
+      
+      gsap.to(icon, { 
+        rotation: 0, 
+        scale: 1, 
+        duration: 0.3, 
+        ease: "power2.out" 
+      });
+
+      gsap.to(techTags, {
+        scale: 1,
+        duration: 0.2,
+        stagger: 0.05,
+        ease: "power2.out"
+      });
+    }
+  };
+
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -97,18 +224,12 @@ const ProjectsSection = () => {
   };
 
   return (
-    <section id="projects" className="py-20 relative">
+    <section ref={sectionRef} id="projects" className="py-20 relative">
       {/* Background gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-slate-900/50 to-transparent pointer-events-none" />
       
       <div className="container mx-auto px-6 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
-        >
+        <div ref={titleRef} className="text-center mb-16">
           <motion.div
             className="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full border border-sky-500/30 bg-sky-500/10"
             whileHover={{ scale: 1.05 }}
@@ -138,182 +259,155 @@ const ProjectsSection = () => {
             A showcase of my recent work, demonstrating expertise in full-stack development, 
             AI integration, and modern web technologies.
           </p>
-        </motion.div>
+        </div>
 
-        <motion.div 
+        <div 
+          ref={projectsGridRef}
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-          variants={containerVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
         >
           {projects.map((project, index) => (
-            <motion.div
+            <div
               key={index}
-              variants={itemVariants}
+              ref={el => projectRefs.current[index] = el}
               className={project.featured ? 'md:col-span-2 lg:col-span-1' : ''}
-              onHoverStart={() => setHoveredProject(index)}
-              onHoverEnd={() => setHoveredProject(null)}
+              onMouseEnter={() => handleProjectHover(index, true)}
+              onMouseLeave={() => handleProjectHover(index, false)}
             >
-              <motion.div
-                whileHover={{ 
-                  scale: 1.02,
-                  rotateY: 5,
-                  rotateX: 5,
-                  z: 50
-                }}
-                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                style={{ transformStyle: "preserve-3d" }}
+              <Card 
+                className={`project-card bg-slate-800/50 backdrop-blur-sm border-slate-700/50 hover:border-sky-500/50 transition-all duration-500 h-full group overflow-hidden relative ${project.glowColor} hover:shadow-2xl`}
               >
-                <Card 
-                  className={`bg-slate-800/50 backdrop-blur-sm border-slate-700/50 hover:border-sky-500/50 transition-all duration-500 h-full group overflow-hidden relative ${project.glowColor} hover:shadow-2xl`}
-                >
-                  {/* Animated background gradient */}
-                  <motion.div
-                    className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-                    animate={{
-                      background: hoveredProject === index ? [
-                        `linear-gradient(45deg, ${project.gradient.split(' ')[1]}, ${project.gradient.split(' ')[3]})`,
-                        `linear-gradient(135deg, ${project.gradient.split(' ')[3]}, ${project.gradient.split(' ')[1]})`,
-                        `linear-gradient(45deg, ${project.gradient.split(' ')[1]}, ${project.gradient.split(' ')[3]})`
-                      ] : undefined
-                    }}
-                    transition={{ duration: 3, repeat: Infinity }}
-                  />
+                {/* Animated background gradient */}
+                <motion.div
+                  className={`absolute inset-0 bg-gradient-to-br ${project.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
+                  animate={{
+                    background: hoveredProject === index ? [
+                      `linear-gradient(45deg, ${project.gradient.split(' ')[1]}, ${project.gradient.split(' ')[3]})`,
+                      `linear-gradient(135deg, ${project.gradient.split(' ')[3]}, ${project.gradient.split(' ')[1]})`,
+                      `linear-gradient(45deg, ${project.gradient.split(' ')[1]}, ${project.gradient.split(' ')[3]})`
+                    ] : undefined
+                  }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                />
 
-                  {/* Project icon/image area */}
-                  <div className="relative overflow-hidden">
-                    <motion.div 
-                      className={`w-full h-48 bg-gradient-to-br ${project.gradient} flex items-center justify-center relative`}
-                      whileHover={{ scale: 1.1 }}
-                      transition={{ duration: 0.3 }}
-                    >
+                {/* Project icon/image area */}
+                <div className="relative overflow-hidden">
+                  <motion.div 
+                    className={`w-full h-48 bg-gradient-to-br ${project.gradient} flex items-center justify-center relative`}
+                    whileHover={{ scale: 1.1 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="project-icon">
+                      <project.icon size={48} className="text-white/80" />
+                    </div>
+                    
+                    {/* Floating particles */}
+                    {hoveredProject === index && [...Array(8)].map((_, i) => (
                       <motion.div
-                        animate={hoveredProject === index ? {
-                          rotate: [0, 360],
-                          scale: [1, 1.2, 1]
-                        } : {}}
+                        key={i}
+                        className="absolute w-1 h-1 bg-white rounded-full"
+                        style={{
+                          left: `${20 + Math.random() * 60}%`,
+                          top: `${20 + Math.random() * 60}%`,
+                        }}
+                        animate={{
+                          y: [0, -30, 0],
+                          opacity: [0, 1, 0],
+                          scale: [0, 1, 0],
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          delay: i * 0.2,
+                        }}
+                      />
+                    ))}
+                  </motion.div>
+                  
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    initial={{ opacity: 0 }}
+                    whileHover={{ opacity: 1 }}
+                  />
+                </div>
+                
+                <CardContent className="p-6 relative z-10">
+                  <div className="flex items-center justify-between mb-3">
+                    <motion.h3 
+                      className="text-xl font-bold text-white group-hover:text-sky-300 transition-colors duration-300"
+                      whileHover={{ scale: 1.02 }}
+                    >
+                      {project.title}
+                    </motion.h3>
+                    {project.featured && (
+                      <motion.span 
+                        className="px-2 py-1 bg-gradient-to-r from-sky-500 to-teal-500 text-white text-xs rounded-full shadow-lg"
+                        animate={{ 
+                          boxShadow: [
+                            "0 0 10px rgba(59, 130, 246, 0.5)",
+                            "0 0 20px rgba(20, 184, 166, 0.7)",
+                            "0 0 10px rgba(59, 130, 246, 0.5)"
+                          ]
+                        }}
                         transition={{ duration: 2, repeat: Infinity }}
                       >
-                        <project.icon size={48} className="text-white/80" />
-                      </motion.div>
-                      
-                      {/* Floating particles */}
-                      {hoveredProject === index && [...Array(8)].map((_, i) => (
-                        <motion.div
-                          key={i}
-                          className="absolute w-1 h-1 bg-white rounded-full"
-                          style={{
-                            left: `${20 + Math.random() * 60}%`,
-                            top: `${20 + Math.random() * 60}%`,
-                          }}
-                          animate={{
-                            y: [0, -30, 0],
-                            opacity: [0, 1, 0],
-                            scale: [0, 1, 0],
-                          }}
-                          transition={{
-                            duration: 2,
-                            repeat: Infinity,
-                            delay: i * 0.2,
-                          }}
-                        />
-                      ))}
-                    </motion.div>
-                    
-                    <motion.div 
-                      className="absolute inset-0 bg-gradient-to-t from-slate-900/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                      initial={{ opacity: 0 }}
-                      whileHover={{ opacity: 1 }}
-                    />
+                        Featured
+                      </motion.span>
+                    )}
                   </div>
                   
-                  <CardContent className="p-6 relative z-10">
-                    <div className="flex items-center justify-between mb-3">
-                      <motion.h3 
-                        className="text-xl font-bold text-white group-hover:text-sky-300 transition-colors duration-300"
-                        whileHover={{ scale: 1.02 }}
+                  <motion.p 
+                    className="text-slate-300 text-sm mb-4 leading-relaxed"
+                    initial={{ opacity: 0.8 }}
+                    whileHover={{ opacity: 1 }}
+                  >
+                    {project.description}
+                  </motion.p>
+                  
+                  <div className="flex flex-wrap gap-2 mb-6">
+                    {project.tech.map((tech, techIndex) => (
+                      <span
+                        key={techIndex}
+                        className="tech-tag px-3 py-1 bg-slate-700/50 text-slate-300 text-xs rounded-full border border-slate-600/50 hover:border-sky-500/50 transition-colors duration-300"
                       >
-                        {project.title}
-                      </motion.h3>
-                      {project.featured && (
-                        <motion.span 
-                          className="px-2 py-1 bg-gradient-to-r from-sky-500 to-teal-500 text-white text-xs rounded-full shadow-lg"
-                          animate={{ 
-                            boxShadow: [
-                              "0 0 10px rgba(59, 130, 246, 0.5)",
-                              "0 0 20px rgba(20, 184, 166, 0.7)",
-                              "0 0 10px rgba(59, 130, 246, 0.5)"
-                            ]
-                          }}
-                          transition={{ duration: 2, repeat: Infinity }}
-                        >
-                          Featured
-                        </motion.span>
-                      )}
-                    </div>
-                    
-                    <motion.p 
-                      className="text-slate-300 text-sm mb-4 leading-relaxed"
-                      initial={{ opacity: 0.8 }}
-                      whileHover={{ opacity: 1 }}
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                  
+                  <div className="flex gap-3">
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="flex-1"
                     >
-                      {project.description}
-                    </motion.p>
-                    
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {project.tech.map((tech, techIndex) => (
-                        <motion.span
-                          key={techIndex}
-                          className="px-3 py-1 bg-slate-700/50 text-slate-300 text-xs rounded-full border border-slate-600/50 hover:border-sky-500/50 transition-colors duration-300"
-                          whileHover={{ 
-                            scale: 1.1, 
-                            backgroundColor: "rgba(59, 130, 246, 0.1)" 
-                          }}
-                          initial={{ opacity: 0, scale: 0.8 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: techIndex * 0.1 }}
-                        >
-                          {tech}
-                        </motion.span>
-                      ))}
-                    </div>
-                    
-                    <div className="flex gap-3">
-                      <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
-                        className="flex-1"
+                      <Button
+                        size="sm"
+                        className="bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-700 hover:to-teal-700 text-white w-full shadow-lg hover:shadow-sky-500/25 transition-all duration-300"
+                        onClick={() => window.open(project.liveUrl, '_blank')}
                       >
-                        <Button
-                          size="sm"
-                          className="bg-gradient-to-r from-sky-600 to-teal-600 hover:from-sky-700 hover:to-teal-700 text-white w-full shadow-lg hover:shadow-sky-500/25 transition-all duration-300"
-                          onClick={() => window.open(project.liveUrl, '_blank')}
-                        >
-                          <ExternalLink size={16} className="mr-2" />
-                          Live Demo
-                        </Button>
-                      </motion.div>
-                      <motion.div
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+                        <ExternalLink size={16} className="mr-2" />
+                        Live Demo
+                      </Button>
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                    >
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="border-slate-600 text-slate-300 hover:bg-slate-700/50 hover:border-sky-500/50 transition-all duration-300"
+                        onClick={() => window.open(project.githubUrl, '_blank')}
                       >
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="border-slate-600 text-slate-300 hover:bg-slate-700/50 hover:border-sky-500/50 transition-all duration-300"
-                          onClick={() => window.open(project.githubUrl, '_blank')}
-                        >
-                          <Github size={16} />
-                        </Button>
-                      </motion.div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </motion.div>
+                        <Github size={16} />
+                      </Button>
+                    </motion.div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
           ))}
-        </motion.div>
+        </div>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
