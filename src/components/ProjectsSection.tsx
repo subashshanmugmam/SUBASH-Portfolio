@@ -64,7 +64,7 @@ const ProjectsSection = () => {
           className="text-center mb-16"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">Featured Projects</h2>
-          <pClassName="text-xl text-gray-300 max-w-3xl mx-auto">
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
             A showcase of my recent work, demonstrating expertise in full-stack development, 
             AI integration, and modern web technologies.
           </p>
