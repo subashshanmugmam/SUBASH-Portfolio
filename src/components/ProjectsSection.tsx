@@ -424,7 +424,7 @@ const ProjectsSection = () => {
               variant="outline"
               size="lg"
               className="border-2 border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:border-sky-400 px-8 py-3 rounded-full backdrop-blur-sm transition-all duration-300"
-              onClick={() => window.open('https://github.com/subash-s', '_blank')}
+              onClick={() => window.open('https://github.com/subashshanmugmam', '_blank')}
             >
               <Github className="mr-2" size={20} />
               View All Projects on GitHub

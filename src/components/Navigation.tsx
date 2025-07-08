@@ -46,7 +46,7 @@ const Navigation = () => {
             className="text-2xl font-bold text-white"
             whileHover={{ scale: 1.05 }}
           >
-            Subash S
+            SUBASH S
           </motion.div>
 
           {/* Desktop Navigation */}

@@ -54,20 +54,20 @@ const ContactSection = () => {
     {
       icon: Mail,
       title: 'Email',
-      value: 'subash@example.com',
-      link: 'mailto:subash@example.com'
+      value: 'subashs2573@gmail.com',
+      link: 'mailto:subashs2573@gmail.com'
     },
     {
       icon: Phone,
       title: 'Phone',
-      value: '+91 98765 43210',
-      link: 'tel:+919876543210'
+      value: '+91 9442868124',
+      link: 'tel:+91 9442868124'
     },
     {
       icon: MapPin,
       title: 'Location',
-      value: 'Karur, Tamil Nadu, India',
-      link: '#'
+      value: 'Namakkal, Tamil Nadu, India',
+      link: 'https://www.google.com/maps/place/Ganga+Nagar,+Namakkal,+Tamil+Nadu/@11.215538,78.190307,225m/data=!3m1!1e3!4m6!3m5!1s0x3babceba374c3dbf:0xc5ea95959dc0bd28!8m2!3d11.2162353!4d78.1920664!16s%2Fg%2F12334z7p1?entry=ttu&g_ep=EgoyMDI1MDYzMC4wIKXMDSoASAFQAw%3D%3D'
     }
   ];
 
@@ -75,19 +75,19 @@ const ContactSection = () => {
     {
       icon: Github,
       name: 'GitHub',
-      url: 'https://github.com/subash-s',
+      url: 'https://github.com/subashshanmugmam',
       color: 'hover:text-gray-400'
     },
     {
       icon: Linkedin,
       name: 'LinkedIn',
-      url: 'https://linkedin.com/in/subash-s',
+      url: 'https://www.linkedin.com/in/subashshanmugam11/',
       color: 'hover:text-blue-400'
     },
     {
       icon: Mail,
       name: 'Email',
-      url: 'mailto:subash@example.com',
+      url: 'mailto:subashs2573@gmail.com',
       color: 'hover:text-green-400'
     }
   ];

@@ -6,23 +6,23 @@ import { Calendar, MapPin, GraduationCap, Briefcase } from 'lucide-react';
 const AboutSection = () => {
   const timeline = [
     {
-      year: '2024',
-      title: 'Senior Software Developer',
-      company: 'Tech Innovation Hub',
+      year: 'July-2025',
+      title: 'Junior Software Developer',
+      company: 'Mr.Innovator',
       description: 'Leading full-stack development projects with focus on AI integration and scalable architectures.',
       icon: Briefcase,
     },
     {
-      year: '2023',
-      title: 'AI Research & Development',
-      company: 'Data Science Institute',
+      year: 'May-2024',
+      title: 'Data Analyst Intern',
+      company: 'Prodigy InfoTech',
       description: 'Developed machine learning models for predictive analytics and natural language processing.',
       icon: GraduationCap,
     },
     {
-      year: '2022',
-      title: 'Full Stack Developer',
-      company: 'Digital Solutions Ltd',
+      year: 'Dec-2024',
+      title: 'Web Developer Intern',
+      company: 'CodeSoft',
       description: 'Built responsive web applications using React, Node.js, and modern development practices.',
       icon: Briefcase,
     },
