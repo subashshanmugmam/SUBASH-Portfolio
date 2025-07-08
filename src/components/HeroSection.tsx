@@ -232,7 +232,7 @@ const HeroSection = () => {
                 variant="outline"
                 size="lg"
                 className="border-2 border-slate-600 text-slate-300 hover:bg-slate-800/50 hover:border-sky-400 px-8 py-3 rounded-full transition-all duration-300 backdrop-blur-sm"
-                onClick={() => window.open('#', '_blank')}
+                onClick={() => window.open('https://drive.google.com/file/d/1RIlaY3Y4dqcaqThZO1g6jlUivzvk0dvB/view?usp=drive_link', '_blank')}
               >
                 <Download className="mr-2" size={20} />
                 Download Resume
