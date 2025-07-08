@@ -152,8 +152,8 @@ const Index = () => {
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <p className="text-slate-400">© 2024 Subash S. All rights reserved.</p>
-              <p className="text-sm text-slate-500">Built with React, TypeScript & Framer Motion</p>
+              <p className="text-slate-400">© 2025 Subash S. All rights reserved.</p>
+              <p className="text-sm text-slate-500">Built with React, TypeScript & Framer Motion,Next js</p>
             </motion.div>
             <motion.div 
               className="flex items-center gap-6"
@@ -163,9 +163,9 @@ const Index = () => {
               viewport={{ once: true }}
             >
               {[
-                { icon: Github, href: "https://github.com/subash-s", color: "hover:text-slate-300" },
-                { icon: Linkedin, href: "https://linkedin.com/in/subash-s", color: "hover:text-blue-400" },
-                { icon: Mail, href: "mailto:subash@example.com", color: "hover:text-emerald-400" }
+                { icon: Github, href: "https://github.com/subashshanmugmam", color: "hover:text-slate-300" },
+                { icon: Linkedin, href: "https://www.linkedin.com/in/subashshanmugam11/", color: "hover:text-blue-400" },
+                { icon: Mail, href: "mailto:subashs2573@gmail.com", color: "hover:text-emerald-400" }
               ].map((social, index) => (
                 <motion.a
                   key={index}
